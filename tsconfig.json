@@ -13,6 +13,7 @@
     ".tmp/",
     "src/admin/",
     "**/*.test.*",
-    "src/plugins/**"
+    "src/plugins/**",
+    "types/generated/**"
   ]
 }
