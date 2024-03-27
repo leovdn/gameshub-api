@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "strapi build",
-    "develop": "strapi develop --watch-admin",
+    "develop": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi"
   },
