@@ -5,7 +5,7 @@ import { slugify } from '../../../utils/slugify';
 
 import { GamesList } from '../../../types/gameTypes';
 
-async function getGameInfo(slug) {
+async function getGameInfo(slug: string) {
   const { JSDOM } = jsdom
 
   const body = await axios.get(`https://www.gog.com/game/${slug}`)
@@ -25,12 +25,23 @@ export default factories.createCoreService('api::game.game', ({ strapi }) => ({
     const gogApiUrl = `https://catalog.gog.com/v1/catalog?limit=48&order=desc%3Atrending&productType=in%3Agame%2Cpack%2Cdlc%2Cextras&page=1&countryCode=BR&locale=en-US&currencyCode=BRL`
 
     const { data: { products } } = await axios.get<GamesList>(gogApiUrl)
-    console.log(products[0])
-    // console.log(await getGameInfo(products[0].slug))
+    // console.log({
+    //   name: products[0].publishers[0],
+    //   slug: slugify(products[0].publishers[0])
+    // })
 
     await strapi.service('api::publisher.publisher').create({
-      name: products[0].publishers[0],
-      slug: slugify(products[0].publishers[0])
+      data: {
+        name: products[0].publishers[0],
+        slug: slugify(products[0].publishers[0]),
+      }
+    })
+
+    await strapi.service('api::developer.developer').create({
+      data: {
+        name: products[0].developers[0],
+        slug: slugify(products[0].developers[0]),
+      }
     })
   }
 }));
