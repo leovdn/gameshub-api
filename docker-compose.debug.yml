@@ -26,10 +26,12 @@ services:
       - ./public/uploads:/opt/app/public/uploads
     ports:
       - "1337:1337"
+      - "9229:9229"
     networks:
       - won-api
     depends_on:
       - won-apiDB
+    # command: node --inspect=0.0.0.0:9229 ./node_modules/@strapi/strapi/bin/strapi.js
 
   won-apiDB:
     container_name: won-apiDB

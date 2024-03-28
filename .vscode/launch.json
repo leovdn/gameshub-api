@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "STRAPI Debug",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["--lazy"],
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceRoot}/node_modules/@strapi/strapi/bin/strapi.js",
+      "args": ["develop"],
+      "protocol": "inspector",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "autoAttachChildProcesses": true,
+      "console": "integratedTerminal"
+    }
+  ]
+}
