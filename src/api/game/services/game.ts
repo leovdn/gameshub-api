@@ -20,28 +20,35 @@ async function getGameInfo(slug: string) {
   }
 }
 
+async function getByName(name: string, entityName: string) {
+  const item = await strapi.db.query(`api::${entityName}.${entityName}`).findOne({
+    where: {
+      name
+    }
+  })
+  return item ? item : null
+}
+
+async function create(name: string, entityName: string) {
+  const item = await getByName(name, entityName)
+
+  if (!item) {
+    await strapi.service(`api::${entityName}.${entityName}`).create({
+      data: {
+        name,
+        slug: slugify(name)
+      }
+    })
+  }
+}
+
 export default factories.createCoreService('api::game.game', ({ strapi }) => ({
   async populate(params) {
     const gogApiUrl = `https://catalog.gog.com/v1/catalog?limit=48&order=desc%3Atrending&productType=in%3Agame%2Cpack%2Cdlc%2Cextras&page=1&countryCode=BR&locale=en-US&currencyCode=BRL`
 
     const { data: { products } } = await axios.get<GamesList>(gogApiUrl)
-    // console.log({
-    //   name: products[0].publishers[0],
-    //   slug: slugify(products[0].publishers[0])
-    // })
 
-    await strapi.service('api::publisher.publisher').create({
-      data: {
-        name: products[0].publishers[0],
-        slug: slugify(products[0].publishers[0]),
-      }
-    })
-
-    await strapi.service('api::developer.developer').create({
-      data: {
-        name: products[0].developers[0],
-        slug: slugify(products[0].developers[0]),
-      }
-    })
+    await create(products[1].publishers[0], 'publisher')
+    await create(products[1].developers[0], 'developer')
   }
 }));
