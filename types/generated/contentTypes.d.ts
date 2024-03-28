@@ -880,7 +880,6 @@ export interface ApiGameGame extends Schema.CollectionType {
       Attribute.SetMinMaxLength<{
         maxLength: 160;
       }>;
-    description: Attribute.Blocks & Attribute.Required;
     price: Attribute.Decimal & Attribute.Required & Attribute.DefaultTo<0>;
     release_date: Attribute.Date;
     rating: Attribute.Enumeration<
@@ -909,6 +908,7 @@ export interface ApiGameGame extends Schema.CollectionType {
       'manyToOne',
       'api::publisher.publisher'
     >;
+    description: Attribute.RichText & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
