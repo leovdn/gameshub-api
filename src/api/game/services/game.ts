@@ -5,6 +5,14 @@ import { slugify } from '../../../utils/slugify';
 
 import { GamesList, Product } from '../../../types/gameTypes';
 
+function Exception(e) {
+  return { e, data: e.data && e.data.errors && e.data.errors && e.details };
+}
+
+function timeout(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function getGameInfo(slug: string) {
   const { JSDOM } = jsdom
 
@@ -13,16 +21,10 @@ async function getGameInfo(slug: string) {
 
   const description = dom.window.document.querySelector('.description')
 
-  // return {
-  //   rating: 'BR0',
-  //   short_description: description.textContent.slice(0, 160),
-  //   description: description.innerHTML
-  // }
-
   return {
     rating: 'BR0',
-    short_description: 'Test short description',
-    description: ['Test description', 'test']
+    short_description: description.textContent.slice(0, 160),
+    description: description.innerHTML
   }
 }
 
@@ -65,14 +67,6 @@ async function createManyToManyData(products: Product[]) {
       platforms[os] = true
     })
 
-    // developers && developers.forEach((developer) => {
-    //   developers[developer] = true
-    // })
-
-    // publishers && publishers.forEach((publisher) => {
-    //   publishers[publisher] = true
-    // })
-
     developers[devs[0]] = true
     publishers[pubs[0]] = true
   })
@@ -93,7 +87,7 @@ async function createGames(products: Product[]) {
       if (!item) {
         console.info(`Creating: ${product.title}...`)
 
-        const game = await strapi.service('api::game.game').create({
+        const game = await strapi.db.query('api::game.game').create({
           data: {
             name: product.title,
             slug: slugify(product.slug),
@@ -107,11 +101,10 @@ async function createGames(products: Product[]) {
             ),
             developers: [await getByName(product.developers[0], "developer")],
             publishers: await getByName(product.publishers[0], "publisher"),
-            description: 'Test description',
-            short_description: 'Test short description',
-            // ...await getGameInfo(product.slug)
+            ...await getGameInfo(product.slug)
           }
         })
+        await timeout(2000);
 
         return game
       }
@@ -124,9 +117,12 @@ export default factories.createCoreService('api::game.game', ({ strapi }) => ({
 
     const { data: { products } } = await axios.get<GamesList>(gogApiUrl)
 
-    await createManyToManyData([products[5], products[6]])
-    await createGames([products[5], products[6]])
+    try {
+      await createManyToManyData([products[1], products[3]])
 
-    // create('Test Developer', 'developer')
+    } catch (error) {
+      console.log('error', Exception(error))
+    }
+
   }
 }));
