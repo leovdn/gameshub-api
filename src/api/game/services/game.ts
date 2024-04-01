@@ -3,29 +3,34 @@ import axios from 'axios'
 import jsdom from 'jsdom'
 import FormData from 'form-data'
 import { slugify } from '../../../utils/slugify';
-
+import queryString from 'querystring'
 import { GamesList, Product } from '../../../types/gameTypes';
 
-function Exception(e) {
+function Exception(e: { data: { errors: any; }; details: any; }) {
   return { e, data: e.data && e.data.errors && e.data.errors && e.details };
 }
 
-function timeout(ms) {
+function timeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function getGameInfo(slug: string) {
   const { JSDOM } = jsdom
 
-  const body = await axios.get(`https://www.gog.com/game/${slug}`)
-  const dom = new JSDOM(body.data)
+  try {
+    const body = await axios.get(`https://www.gog.com/game/${slug}`)
+    const dom = new JSDOM(body.data)
 
-  const description = dom.window.document.querySelector('.description')
+    const description = dom.window.document.querySelector('.description')
 
-  return {
-    rating: 'BR0',
-    short_description: description.textContent.slice(0, 160),
-    description: description.innerHTML
+    return {
+      rating: 'BR0',
+      short_description: description.textContent.slice(0, 160),
+      description: description.innerHTML,
+    }
+
+  } catch (error) {
+    console.log("getGameInfo", Exception(error))
   }
 }
 
@@ -81,27 +86,32 @@ async function createManyToManyData(products: Product[]) {
 }
 
 async function setImage({ image, game, field = "cover" }) {
-  const url = `${image}`
-  const { data } = await axios.get(url, { responseType: 'arraybuffer' })
-  const buffer = Buffer.from(data, "base64")
+  try {
+    const url = `${image}`
+    const { data } = await axios.get(url, { responseType: 'arraybuffer' })
+    const buffer = Buffer.from(data, "base64")
 
-  const formData = new FormData()
+    const formData = new FormData()
 
-  formData.append("refId", game.id)
-  formData.append("ref", "api::game.game")
-  formData.append("field", field)
-  formData.append("files", buffer, { filename: `${game.slug}.jpg` })
+    formData.append("refId", game.id)
+    formData.append("ref", "api::game.game")
+    formData.append("field", field)
+    formData.append("files", buffer, { filename: `${game.slug}.jpg` })
 
-  console.info(`Uploading: ${field} image ${game.slug}.jpg ...`)
+    console.info(`Uploading: ${field} image ${game.slug}.jpg ...`)
 
-  await axios({
-    method: "POST",
-    url: `http://localhost:${strapi.config.port}/api/upload`, //CHANGE PORST FROM ENV FILE IN CASE OF PRODUCTION
-    data: formData,
-    headers: {
-      "Content-Type": `multipart/form-data; boundary=${formData.getBoundary()}`,
-    },
-  })
+    await axios({
+      method: "POST",
+      url: `http://localhost:${strapi.config.port}/api/upload`, //CHANGE PORST FROM ENV FILE IN CASE OF PRODUCTION
+      data: formData,
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${formData.getBoundary()}`,
+      },
+    })
+
+  } catch (error) {
+    console.log("setImage", Exception(error))
+  }
 
 }
 
@@ -145,19 +155,17 @@ async function createGames(products: Product[]) {
     }))
 }
 
-export default factories.createCoreService('api::game.game', ({ strapi }) => ({
-  async populate(params) {
-    const gogApiUrl = `https://catalog.gog.com/v1/catalog?limit=48&order=desc%3Atrending&productType=in%3Agame%2Cpack%2Cdlc%2Cextras&page=1&countryCode=BR&locale=en-US&currencyCode=BRL`
-
-    const { data: { products } } = await axios.get<GamesList>(gogApiUrl)
+export default factories.createCoreService('api::game.game', ({ }) => ({
+  async populate(params: any) {
+    const gogApiUrl = `https://catalog.gog.com/v1/catalog?${queryString.stringify(params)}`
 
     try {
-      await createManyToManyData([products[8], products[9]])
+      const { data: { products } } = await axios.get<GamesList>(gogApiUrl)
+      // await createManyToManyData([products[8], products[9]])
       await createGames([products[8], products[9]])
 
     } catch (error) {
       console.log('error', Exception(error))
     }
-
   }
 }));

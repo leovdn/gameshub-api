@@ -8,7 +8,14 @@ export default factories.createCoreController('api::game.game', ({ strapi }) => 
   async populate(ctx) {
     console.log('Starting to populate...')
 
-    await strapi.service('api::game.game').populate()
+    const options = {
+      order: 'desc:trending',
+      productType: 'in:game,pack',
+      page: '1',
+      ...ctx.query
+    }
+
+    await strapi.service('api::game.game').populate(options)
 
     ctx.send('Finished populating!')
   }
