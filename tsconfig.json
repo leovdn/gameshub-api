@@ -3,8 +3,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": ".",
-    "lib": ["ES2021"],
-    "sourceMap": true
+    "lib": ["ES2021", "DOM.Iterable", "DOM"],
+    "sourceMap": true,
+    "downlevelIteration": true
   },
   "include": ["./", "./**/*.ts", "./**/*.js", "src/**/*.json"],
   "exclude": [

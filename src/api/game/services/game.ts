@@ -1,6 +1,7 @@
 import { factories } from '@strapi/strapi';
 import axios from 'axios'
 import jsdom from 'jsdom'
+import FormData from 'form-data'
 import { slugify } from '../../../utils/slugify';
 
 import { GamesList, Product } from '../../../types/gameTypes';
@@ -79,6 +80,31 @@ async function createManyToManyData(products: Product[]) {
   ])
 }
 
+async function setImage({ image, game, field = "cover" }) {
+  const url = `${image}`
+  const { data } = await axios.get(url, { responseType: 'arraybuffer' })
+  const buffer = Buffer.from(data, "base64")
+
+  const formData = new FormData()
+
+  formData.append("refId", game.id)
+  formData.append("ref", "api::game.game")
+  formData.append("field", field)
+  formData.append("files", buffer, { filename: `${game.slug}.jpg` })
+
+  console.info(`Uploading: ${field} image ${game.slug}.jpg ...`)
+
+  await axios({
+    method: "POST",
+    url: `http://localhost:${strapi.config.port}/api/upload`, //CHANGE PORST FROM ENV FILE IN CASE OF PRODUCTION
+    data: formData,
+    headers: {
+      "Content-Type": `multipart/form-data; boundary=${formData.getBoundary()}`,
+    },
+  })
+
+}
+
 async function createGames(products: Product[]) {
   await Promise.all(
     products.map(async (product) => {
@@ -104,6 +130,14 @@ async function createGames(products: Product[]) {
             ...await getGameInfo(product.slug)
           }
         })
+
+        await setImage({ image: product.coverHorizontal, game })
+        await Promise.all(product.screenshots.slice(0, 5).map(imageUrl => {
+          const fixedUrl = imageUrl.replace('_{formatter}', '')
+          setImage({ image: fixedUrl, game, field: "gallery" })
+
+        }))
+
         await timeout(2000);
 
         return game
@@ -118,7 +152,8 @@ export default factories.createCoreService('api::game.game', ({ strapi }) => ({
     const { data: { products } } = await axios.get<GamesList>(gogApiUrl)
 
     try {
-      await createManyToManyData([products[1], products[3]])
+      await createManyToManyData([products[8], products[9]])
+      await createGames([products[8], products[9]])
 
     } catch (error) {
       console.log('error', Exception(error))

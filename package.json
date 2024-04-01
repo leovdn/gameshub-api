@@ -10,7 +10,7 @@
   "scripts": {
     "build": "strapi build",
     "debug": "docker compose up",
-    "develop": "strapi develop -d",
+    "develop": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi"
   },
