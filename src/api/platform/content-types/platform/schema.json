@@ -4,22 +4,21 @@
   "info": {
     "singularName": "platform",
     "pluralName": "platforms",
-    "displayName": "platform"
+    "displayName": "platform",
+    "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
       "type": "string",
-      "required": true,
-      "unique": true
+      "required": true
     },
     "slug": {
       "type": "uid",
-      "targetField": "name",
-      "required": true
+      "targetField": "name"
     },
     "games": {
       "type": "relation",

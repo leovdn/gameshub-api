@@ -2,21 +2,21 @@
  * game controller
  */
 
-import { factories } from '@strapi/strapi'
+import { factories } from "@strapi/strapi";
 
-export default factories.createCoreController('api::game.game', ({ strapi }) => ({
-  async populate(ctx) {
-    console.log('Starting to populate...')
+export default factories.createCoreController(
+  "api::game.game",
+  ({ strapi }) => ({
+    async populate(ctx) {
+      const options = {
+        limit: 48,
+        order: "desc:trending",
+        ...ctx.query,
+      };
 
-    const options = {
-      order: 'desc:trending',
-      productType: 'in:game,pack',
-      page: '1',
-      ...ctx.query
-    }
+      await strapi.service("api::game.game").populate(options);
 
-    await strapi.service('api::game.game').populate(options)
-
-    ctx.send('Finished populating!')
-  }
-}));
+      ctx.send("Finished populating games!");
+    },
+  })
+);

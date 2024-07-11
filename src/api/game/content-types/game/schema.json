@@ -8,37 +8,39 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
       "type": "string",
-      "required": true,
-      "unique": true
+      "required": true
     },
     "slug": {
       "type": "uid",
-      "targetField": "name",
-      "required": true
+      "targetField": "name"
     },
     "short_description": {
-      "type": "text",
-      "required": true,
-      "maxLength": 160
+      "type": "text"
+    },
+    "description": {
+      "type": "customField",
+      "options": {
+        "output": "HTML",
+        "preset": "rich"
+      },
+      "customField": "plugin::ckeditor.CKEditor"
     },
     "price": {
       "type": "decimal",
-      "required": true,
-      "default": 0
+      "required": true
     },
     "release_date": {
       "type": "date"
     },
     "rating": {
       "type": "enumeration",
-      "enum": ["BR0", "BR10", "BR12", "BR14", "BR16", "BR18"],
-      "default": "BR0"
+      "enum": ["BR0", "BR10", "BR12", "BR14", "BR16", "BR18"]
     },
     "cover": {
       "type": "media",
@@ -50,18 +52,12 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "categories": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::category.category",
-      "inversedBy": "games"
-    },
-    "developers": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::developer.developer",
       "inversedBy": "games"
     },
     "platforms": {
@@ -70,15 +66,17 @@
       "target": "api::platform.platform",
       "inversedBy": "games"
     },
+    "developers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::developer.developer",
+      "inversedBy": "games"
+    },
     "publisher": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::publisher.publisher",
       "inversedBy": "games"
-    },
-    "description": {
-      "type": "richtext",
-      "required": true
     }
   }
 }
