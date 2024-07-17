@@ -1,57 +1,62 @@
-# 🚀 Getting started with Strapi
+# GameHub API
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+API for GameHub created with Strapi CMS, GraphQL, PostgresSQL
 
-### `develop`
+## Technologies Used
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+- Strapi (v4.2.0) - Headless CMS and API builder
+- Node.js (v16.14.2) - JavaScript runtime environment
+- PostgreSQL (v14.5) - Relational database management system
+- Docker (v20.10.14) - Containerization platform
+- PostgreSQL
 
-```
-npm run develop
-# or
-yarn develop
-```
+## ⚠️ Required to run the project
 
-### `start`
+- Node.js (v16.14.2)
+- Docker
 
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
+## ⚙️ Getting Started
 
-```
-npm run start
-# or
-yarn start
-```
+1. To get started, clone this repository to your local machine and install it by running the following command:
 
-### `build`
+   ```
+   docker compose up
+   ```
 
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
+2. After the container runs all the images you will be able to:
 
-```
-npm run build
-# or
-yarn build
-```
+   - **Strapi admin Panel:** Open http://localhost:1337 with your browser
 
-## ⚙️ Deployment
+   - **Strapi instructions:**
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+     - Create a new Strapi user:
+       In the Strapi admin panel, go to `Users & Permissions` > `Users` and create a new user with admin permissions.
+
+     - Start building your API:
+
+     - In the Strapi admin panel, go to `Content-Types Builder` and start creating content types and fields for your API.
+
+   - **Graphql:** Open http://localhost:1337/graphql to run query commands, for instance to get games names:
+
+   ```
+     games {
+       data {
+         id
+         attributes {
+           name
+         }
+       }
+     }
+   ```
+
+3. It's all set up now. Don't forget to run the client side to see the results in the Web version: [Gamehub Client](https://github.com/leovdn/gamehub-client)
 
 ## 📚 Learn more
 
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
 - [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
 - [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
 - [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
 
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
+## License
 
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
-
----
-
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+This project is licensed under the MIT License.
