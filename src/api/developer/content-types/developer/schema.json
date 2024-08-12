@@ -4,7 +4,8 @@
   "info": {
     "singularName": "developer",
     "pluralName": "developers",
-    "displayName": "developer"
+    "displayName": "developer",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -24,6 +25,12 @@
       "relation": "manyToMany",
       "target": "api::game.game",
       "mappedBy": "developers"
+    },
+    "free_games": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::free-game.free-game",
+      "mappedBy": "developer"
     }
   }
 }

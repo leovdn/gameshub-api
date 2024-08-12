@@ -1,5 +1,5 @@
-import Icon from "./extensions/icon.png";
-import Logo from "./extensions/logo.svg";
+import Icon from "./extensions/logo-black-simple.svg";
+import Logo from "./extensions/logo-black.svg";
 
 export default {
   config: {

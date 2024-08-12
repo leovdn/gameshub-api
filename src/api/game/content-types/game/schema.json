@@ -40,19 +40,33 @@
     },
     "rating": {
       "type": "enumeration",
-      "enum": ["BR0", "BR10", "BR12", "BR14", "BR16", "BR18"]
+      "enum": [
+        "BR0",
+        "BR10",
+        "BR12",
+        "BR14",
+        "BR16",
+        "BR18"
+      ]
     },
     "cover": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "gallery": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images", "files", "videos", "audios"]
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
     },
     "categories": {
       "type": "relation",
@@ -77,6 +91,12 @@
       "relation": "manyToOne",
       "target": "api::publisher.publisher",
       "inversedBy": "games"
+    },
+    "free_games": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::free-game.free-game",
+      "mappedBy": "title"
     }
   }
 }
