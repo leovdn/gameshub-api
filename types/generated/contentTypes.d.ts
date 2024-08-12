@@ -788,6 +788,40 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiBannerBanner extends Schema.CollectionType {
+  collectionName: 'banners';
+  info: {
+    singularName: 'banner';
+    pluralName: 'banners';
+    displayName: 'banner';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Attribute.String & Attribute.Required;
+    image: Attribute.Media & Attribute.Required;
+    subtitle: Attribute.Text & Attribute.Required;
+    button: Attribute.Component<'page.button'>;
+    ribbon: Attribute.Component<'page.ribbon'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::banner.banner',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::banner.banner',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiCategoryCategory extends Schema.CollectionType {
   collectionName: 'categories';
   info: {
@@ -829,6 +863,7 @@ export interface ApiDeveloperDeveloper extends Schema.CollectionType {
     singularName: 'developer';
     pluralName: 'developers';
     displayName: 'developer';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -841,6 +876,11 @@ export interface ApiDeveloperDeveloper extends Schema.CollectionType {
       'manyToMany',
       'api::game.game'
     >;
+    free_games: Attribute.Relation<
+      'api::developer.developer',
+      'oneToMany',
+      'api::free-game.free-game'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -851,6 +891,51 @@ export interface ApiDeveloperDeveloper extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::developer.developer',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiFreeGameFreeGame extends Schema.CollectionType {
+  collectionName: 'free_games';
+  info: {
+    singularName: 'free-game';
+    pluralName: 'free-games';
+    displayName: 'free-game';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    price: Attribute.Decimal & Attribute.Required;
+    promotionalPrice: Attribute.Decimal & Attribute.DefaultTo<0>;
+    developer: Attribute.Relation<
+      'api::free-game.free-game',
+      'manyToOne',
+      'api::developer.developer'
+    >;
+    img: Attribute.Media & Attribute.Required;
+    slug: Attribute.String & Attribute.Required & Attribute.Unique;
+    title: Attribute.Relation<
+      'api::free-game.free-game',
+      'manyToOne',
+      'api::game.game'
+    >;
+    highlight: Attribute.Component<'page.highlight'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::free-game.free-game',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::free-game.free-game',
       'oneToOne',
       'admin::user'
     > &
@@ -907,6 +992,11 @@ export interface ApiGameGame extends Schema.CollectionType {
       'api::game.game',
       'manyToOne',
       'api::publisher.publisher'
+    >;
+    free_games: Attribute.Relation<
+      'api::game.game',
+      'oneToMany',
+      'api::free-game.free-game'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1006,8 +1096,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::banner.banner': ApiBannerBanner;
       'api::category.category': ApiCategoryCategory;
       'api::developer.developer': ApiDeveloperDeveloper;
+      'api::free-game.free-game': ApiFreeGameFreeGame;
       'api::game.game': ApiGameGame;
       'api::platform.platform': ApiPlatformPlatform;
       'api::publisher.publisher': ApiPublisherPublisher;
