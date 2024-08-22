@@ -6,3 +6,7 @@ node_modules/
 .env
 data/
 backup/
+Dockerfile
+README.md
+.next
+.git
