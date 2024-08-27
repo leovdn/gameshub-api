@@ -139,6 +139,7 @@ async function setImage({ image, game, field = "cover" }) {
       data: formData,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+        Authorization: `Bearer ${process.env.API_TOKEN_SALT}`,
       },
     });
   } catch (error) {
@@ -158,7 +159,7 @@ async function createGames(products: Product[]) {
           data: {
             name: product.title,
             slug: product.slug,
-            price: product.price.finalMoney.amount,
+            price: product.price.finalMoney.amount || 0,
             release_date: new Date(product.releaseDate),
             categories: await Promise.all(
               product.genres.map((genre) =>
