@@ -11,6 +11,8 @@ export default factories.createCoreController(
       const options = {
         limit: 48,
         order: "desc:trending",
+        releaseStatuses: "new-arrival",
+        productType: "game",
         ...ctx.query,
       };
 

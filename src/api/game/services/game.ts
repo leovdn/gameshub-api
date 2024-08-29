@@ -159,7 +159,7 @@ async function createGames(products: Product[]) {
           data: {
             name: product.title,
             slug: product.slug,
-            price: product.price.finalMoney.amount || 0,
+            price: product.price?.finalMoney?.amount || 0,
             release_date: new Date(product.releaseDate),
             categories: await Promise.all(
               product.genres.map((genre) =>

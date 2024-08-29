@@ -91,12 +91,6 @@
       "relation": "manyToOne",
       "target": "api::publisher.publisher",
       "inversedBy": "games"
-    },
-    "free_games": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::free-game.free-game",
-      "mappedBy": "title"
     }
   }
 }
